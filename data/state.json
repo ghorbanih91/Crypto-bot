@@ -1,0 +1,29 @@
+{
+ "last": {
+  "scan": 1795784323.0681791,
+  "news": 1795783970.1812494,
+  "prices": 1795784012.9844406,
+  "daily": 1795784324.8401992
+ },
+ "signals": [],
+ "sent_events": [
+  "BTC-USDT|1H|Sweep|-1|1795773600",
+  "BTC-USDT|1H|Sweep|-1|1795777200",
+  "BTC-USDT|4H|CHoCH|1|1795752000",
+  "ETH-USDT|1H|Sweep|-1|1795773600",
+  "ETH-USDT|1H|Sweep|-1|1795777200",
+  "ETH-USDT|4H|CHoCH|1|1795752000",
+  "ETH-USDT|4H|Sweep|1|1795752000",
+  "ETH-USDT|4H|Sweep|-1|1795766400"
+ ],
+ "sig_keys": {},
+ "news_seen": [],
+ "price_ref": {
+  "usdt": 296300.0,
+  "gold": 26163870.625492305
+ },
+ "price_date": "2026-11-27",
+ "price_ts": 1795782163.4514923,
+ "daily_date": "2026-11-27",
+ "offset": 346980012
+}

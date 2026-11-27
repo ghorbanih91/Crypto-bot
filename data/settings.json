@@ -34,17 +34,17 @@
  "params": {
   "min_score": 10,
   "min_rr": 2,
-  "daily_hour": 2,
-  "price_hour": 24,
+  "daily_hour": 9,
+  "price_hour": 8,
   "price_move_pct": 1,
-  "price_every_hours": 8,
+  "price_every_hours": 12,
   "gold_adjust_pct": 0,
   "news_min_importance": 6,
   "news_max_per_run": 3,
   "send_gap_sec": 20
  },
  "texts": {
-  "watermark": "Sodina",
+  "watermark": "Sodina.ir | سودینا",
   "disclaimer": "⚠️ ریسک هر معامله حداکثر ۱٪ سرمایه.",
   "footer": "Sodina.ir",
   "tag_signals": "#signal",
@@ -54,5 +54,5 @@
   "tag_prices": "#price"
  },
  "score_max": 16,
- "_rev": 1795815958.979
+ "_rev": 1795820657.9
 }

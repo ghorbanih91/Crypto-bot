@@ -32,7 +32,7 @@
   "ETH-USDT"
  ],
  "params": {
-  "min_score": 7,
+  "min_score": 10,
   "min_rr": 2,
   "daily_hour": 24,
   "price_hour": 24,
@@ -40,7 +40,19 @@
   "price_every_hours": 8,
   "gold_adjust_pct": 0,
   "news_min_importance": 6,
-  "news_max_per_run": 3
+  "news_max_per_run": 3,
+  "send_gap_sec": 20
  },
- "_rev": 1795811008.49
+ "texts": {
+  "watermark": "",
+  "disclaimer": "⚠️ توصیهٔ مالی نیست؛ ریسک هر معامله حداکثر ۱٪ سرمایه.",
+  "footer": "",
+  "tag_signals": "",
+  "tag_events": "",
+  "tag_daily_analysis": "",
+  "tag_news": "",
+  "tag_prices": ""
+ },
+ "score_max": 16,
+ "_rev": 1795815622.1267989
 }

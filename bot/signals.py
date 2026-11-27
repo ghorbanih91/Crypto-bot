@@ -1,8 +1,18 @@
 """تولید سیگنال با امتیازدهی هم‌پوشانی (confluence) + ردیابی نتیجه."""
 import numpy as np
 from .smc import range_pos
+from .classic import sr_levels, trendline
 
-MAX_SCORE = 11
+MAX_SCORE = 16
+RANK = {"5m": 1, "15m": 2, "1H": 3, "4H": 4, "1D": 5}
+
+
+def blocked(sigs, sym, d, tf):
+    """تا وقتی سیگنال قبلیِ هم‌جهت و هم‌تایم‌فریم به هدف/حد ضرر نخورده، سیگنال جدید نده."""
+    for s in sigs:
+        if s["sym"] == sym and s["dir"] == d and s.get("status", "open") == "open" and abs(RANK[s["tf"]] - RANK[tf]) < 2:
+            return True
+    return False
 
 
 def find_signal(sym, tf, an, an4, an1d, min_rr=2.0):
@@ -83,9 +93,34 @@ def find_signal(sym, tf, an, an4, an1d, min_rr=2.0):
         score += 1; why.append("حجم بالا در شکست ساختار")
     why.append(f"ناحیه ورود: {z['kind']}")
 
+    # --- ICT / RTM / کلاسیک ---
+    atr4 = float(an4["atr"][-1])
+    for lv in sr_levels(an4):
+        if (d == 1 and -0.2 * atr4 <= price - lv <= 0.8 * atr4) or (d == -1 and -0.8 * atr4 <= price - lv <= 0.2 * atr4):
+            score += 1; why.append("کلاسیک: برخورد به " + ("حمایت" if d == 1 else "مقاومت") + " ۴ساعته"); break
+    tl = trendline(an, d)
+    tl_used = None
+    if tl and abs(price - tl["y"]) <= 0.4 * a:
+        score += 1; why.append("کلاسیک: واکنش به خط روند"); tl_used = tl
+    hi_leg = float(c.h[ev["i"]:].max()) if d == 1 else float(c.l[ev["i"]:].min())
+    lo_leg = float(c.l[ev["origin"]:ev["i"] + 1].min()) if d == 1 else float(c.h[ev["origin"]:ev["i"] + 1].max())
+    if abs(hi_leg - lo_leg) > 0:
+        ret = abs(hi_leg - price) / abs(hi_leg - lo_leg)
+        if 0.62 <= ret <= 0.79:
+            score += 1; why.append("ICT: ناحیهٔ OTE فیبوناچی (۰.۶۲–۰.۷۹)")
+    hr = int(c.t[-1] // 3600) % 24
+    if 7 <= hr < 10 or 12 <= hr < 16:
+        score += 1; why.append("ICT: کیل‌زون لندن/نیویورک")
+    o1, c1, o0, c0 = c.o[-1], c.c[-1], c.o[-2], c.c[-2]
+    body, lw, uw = abs(c1 - o1), min(o1, c1) - c.l[-1], c.h[-1] - max(o1, c1)
+    eng = (d == 1 and c1 > o1 and c0 < o0 and c1 >= o0 and o1 <= c0) or (d == -1 and c1 < o1 and c0 > o0 and c1 <= o0 and o1 >= c0)
+    pin = (d == 1 and lw >= 2 * max(body, 1e-9) and lw > uw) or (d == -1 and uw >= 2 * max(body, 1e-9) and uw > lw)
+    if eng or pin:
+        score += 1; why.append("RTM: کندل واکنشی (" + ("انگلاف" if eng else "پین‌بار") + ")")
+
     return dict(sym=sym, tf=tf, dir=d, entry=price, sl=float(sl), tp1=float(tp1), tp2=float(tp2),
                 rr1=float(rr1), rr2=float(rr2), score=int(score), why=why,
-                zone=[z["bot"], z["top"]], zone_kind=z["kind"], t=float(c.t[-1]))
+                zone=[z["bot"], z["top"]], zone_kind=z["kind"], t=float(c.t[-1]), tl=tl_used)
 
 
 def resolve(sig, c):

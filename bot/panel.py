@@ -2,7 +2,7 @@
 import json
 from . import telegram as tg
 from .signals import stats
-from .util import FEATURES, DEFAULT_SETTINGS, save, log
+from .util import FEATURES, DEFAULT_SETTINGS, TEXT_KEYS, save, log
 
 ROUTABLE = list(FEATURES)
 
@@ -42,7 +42,10 @@ def channels_menu(S):
 
 def params_text(S):
     lines = [f"<code>{k}</code> = {v}" for k, v in S["params"].items()]
-    return ("⚙️ <b>پارامترها</b>\n" + "\n".join(lines) + "\n\nتغییر: <code>/set نام مقدار</code>\nمثال: <code>/set min_score 8</code>",
+    tl = [f"<code>{k}</code> ({n}) = {tg.esc(str(S['texts'].get(k, '')) or '—')}" for k, n in TEXT_KEYS.items()]
+    return ("⚙️ <b>پارامترها</b>\n" + "\n".join(lines) + "\n\n✏️ <b>متن‌ها</b>\n" + "\n".join(tl) +
+            "\n\nتغییر عدد: <code>/set نام مقدار</code> (مثال: <code>/set min_score 11</code>)\n"
+            "تغییر متن: <code>/text نام متن</code> (مثال: <code>/text tag_signals #سیگنال #بیتکوین</code>)\nبرای پاک کردن: <code>/text نام -</code>",
             kb([[{"text": "⬅️ بازگشت", "callback_data": "home"}]]))
 
 
@@ -131,6 +134,12 @@ def handle(u, S, state, save_settings):
             tg.send(chat, f"✅ «{tg.esc(info.get('title', ref))}» ثبت شد. (مطمئن شوید بات در آن ادمین است)")
         except Exception as e:
             tg.send(chat, f"❌ نشد: {tg.esc(str(e))}\nبات باید در کانال ادمین باشد.")
+    elif cmd == "/text":
+        parts = text.split(None, 2)
+        if len(parts) < 2 or parts[1] not in TEXT_KEYS:
+            return tg.send(chat, "نام‌های مجاز:\n" + "\n".join(f"<code>{k}</code> — {n}" for k, n in TEXT_KEYS.items()))
+        S["texts"][parts[1]] = "" if len(parts) < 3 or parts[2].strip() == "-" else parts[2].strip()
+        save_settings(); tg.send(chat, f"✅ {parts[1]} ذخیره شد.")
     elif cmd == "/set" and len(text.split()) == 3:
         k, v = text.split()[1:]
         if k not in S["params"]:

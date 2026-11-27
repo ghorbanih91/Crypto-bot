@@ -21,7 +21,7 @@ DEFAULT_SETTINGS = {
     "channels": {},
     "symbols": ["BTC-USDT", "ETH-USDT"],
     "params": {
-        "min_score": 7,            # حداقل امتیاز سیگنال از 11
+        "min_score": 10,           # حداقل امتیاز سیگنال از 16
         "min_rr": 2.0,             # حداقل ریسک به ریوارد
         "daily_hour": 8,           # ساعت تحلیل روزانه (وقت تهران)
         "price_hour": 9,           # ساعت ارسال قیمت روزانه (وقت تهران)
@@ -30,7 +30,21 @@ DEFAULT_SETTINGS = {
         "gold_adjust_pct": 0.0,    # تنظیم اختلاف طلای جهانی با بازار ایران
         "news_min_importance": 6,  # حداقل اهمیت خبر از 10
         "news_max_per_run": 3,
+        "send_gap_sec": 20,        # فاصلهٔ ارسال پیام‌ها (ثانیه)
     },
+    "texts": {
+        "watermark": "",           # متن واترمارک روی تصاویر (ترجیحاً انگلیسی)
+        "disclaimer": "⚠️ توصیهٔ مالی نیست؛ ریسک هر معامله حداکثر ۱٪ سرمایه.",
+        "footer": "",              # امضای پایین همهٔ پیام‌ها (مثلاً @channel)
+        "tag_signals": "", "tag_events": "", "tag_daily_analysis": "", "tag_news": "", "tag_prices": "",
+    },
+    "score_max": 16,
+}
+
+TEXT_KEYS = {
+    "watermark": "واترمارک تصاویر", "disclaimer": "هشدار ریسک سیگنال‌ها", "footer": "امضای پایین پیام‌ها",
+    "tag_signals": "هشتگ سیگنال‌ها", "tag_events": "هشتگ رویدادها", "tag_daily_analysis": "هشتگ تحلیل روزانه",
+    "tag_news": "هشتگ اخبار", "tag_prices": "هشتگ قیمت‌ها",
 }
 
 

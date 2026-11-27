@@ -56,22 +56,36 @@ def _json(txt):
     return json.loads(re.search(r"\{.*\}", txt, re.S).group(0))
 
 
+PROMPT = ("You are a crypto news editor. For the news below return ONLY JSON: "
+          '{"importance":1-10 (market-moving for BTC/ETH traders),"title_fa":"Persian headline","summary_fa":"1-2 sentence Persian summary"}\n\n')
+GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+
+
+def _parse(txt):
+    return json.loads(re.search(r"\{.*\}", txt, re.S).group(0))
+
+
 def llm(it):
-    """ترجمه + اهمیت ۱ تا ۱۰ با Gemini (رایگان) یا Claude. بدون کلید: None."""
-    try:
-        if GEM_KEY:
-            r = requests.post(f"https://generativelanguage.googleapis.com/v1beta/models/{GEM_MODEL}:generateContent",
-                              headers={"x-goog-api-key": GEM_KEY, "content-type": "application/json"},
-                              json={"contents": [{"parts": [{"text": _prompt(it)}]}],
+    """ترجمه + اهمیت ۱ تا ۱۰. اولویت: Gemini (رایگان) ← Claude ← None."""
+    prompt = PROMPT + f"Title: {it['title']}\nText: {it['desc']}"
+    if GEMINI_KEY:
+        try:
+            r = requests.post(f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent",
+                              headers={"x-goog-api-key": GEMINI_KEY, "content-type": "application/json"},
+                              json={"contents": [{"parts": [{"text": prompt}]}],
                                     "generationConfig": {"responseMimeType": "application/json"}}, timeout=60)
-            return _json(r.json()["candidates"][0]["content"]["parts"][0]["text"])
-        if KEY:
+            return _parse(r.json()["candidates"][0]["content"]["parts"][0]["text"])
+        except Exception as e:
+            log.warning("gemini: %s", e)
+    if KEY:
+        try:
             r = requests.post("https://api.anthropic.com/v1/messages",
                               headers={"x-api-key": KEY, "anthropic-version": "2023-06-01", "content-type": "application/json"},
-                              json={"model": MODEL, "max_tokens": 400, "messages": [{"role": "user", "content": _prompt(it)}]}, timeout=60)
-            return _json(r.json()["content"][0]["text"])
-    except Exception as e:
-        log.warning("llm: %s", e)
+                              json={"model": MODEL, "max_tokens": 400, "messages": [{"role": "user", "content": prompt}]}, timeout=60)
+            return _parse(r.json()["content"][0]["text"])
+        except Exception as e:
+            log.warning("claude: %s", e)
     return None
 
 

@@ -6,9 +6,9 @@ from . import market, smc, signals as sg
 from .market import TF_SEC
 
 
-def run(sym, days, min_score=7, min_rr=2.0, data=None):
+def run(sym, days, min_score=10, min_rr=2.0, data=None):
     D = data or {tf: market.history(sym, tf, days if tf in ("15m", "1H") else days + 120) for tf in ("15m", "1H", "4H", "1D")}
-    res, last_key = [], {}
+    res, last_key, busy = [], {}, {}
     for tf in ("15m", "1H"):
         c = D[tf]
         start = max(300, len(c) - int(days * 86400 / TF_SEC[tf]))
@@ -29,10 +29,11 @@ def run(sym, days, min_score=7, min_rr=2.0, data=None):
             if not s or s["score"] < min_score:
                 continue
             key = (s["dir"], round(s["entry"] / (a4["atr"][-1])))
-            if now - last_key.get(key, 0) < 6 * 3600:
+            if now - last_key.get(key, 0) < 6 * 3600 or now < busy.get(s["dir"], 0):
                 continue
             last_key[key] = now
             sg.resolve(s, c.sl(i + 1))
+            busy[s["dir"]] = s.get("last_t", now)
             if s.get("status", "open") in ("open", "tp1"):
                 continue
             s["tf"] = tf
@@ -43,7 +44,7 @@ def run(sym, days, min_score=7, min_rr=2.0, data=None):
 def report(res):
     st = sg.stats(res)
     print(f"سیگنال‌ها: {st['total']} | برد: {st['wins']} | باخت: {st['losses']} | وین‌ریت: {st['winrate']:.1f}% | میانگین R: {st['avg_r']:+.2f}")
-    for lo in (7, 8, 9):
+    for lo in (10, 11, 12):
         sub = [s for s in res if s["score"] >= lo]
         if sub:
             x = sg.stats(sub)
@@ -53,5 +54,5 @@ def report(res):
 if __name__ == "__main__":
     sym = sys.argv[1] if len(sys.argv) > 1 else "BTC-USDT"
     days = int(sys.argv[2]) if len(sys.argv) > 2 else 30
-    ms = int(sys.argv[3]) if len(sys.argv) > 3 else 7
+    ms = int(sys.argv[3]) if len(sys.argv) > 3 else 10
     report(run(sym, days, ms))

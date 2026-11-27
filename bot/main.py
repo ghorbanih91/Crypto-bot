@@ -1,5 +1,5 @@
 import argparse, time, traceback
-from . import telegram as tg, jobs, panel, remote
+from . import telegram as tg, jobs, panel, remote, router
 from .util import load, save, load_settings, merge_defaults, log
 
 INTERVALS = {"scan": 300, "news": 1800, "prices": 600, "daily": 300}
@@ -17,6 +17,10 @@ def main():
         save("settings.json", S)
         if remote.enabled():
             remote.put_settings(S)
+    raw = load("settings.json", {})
+    if raw and raw.get("score_max") != 16:   # مقیاس امتیاز سیگنال از ۱۱ به ۱۶ رفت
+        S["params"]["min_score"], S["score_max"] = 10, 16
+        save_s()
     end = time.time() + args.minutes * 60
     last = state.setdefault("last", {})
     log.info("bot started; admins=%s channels=%d", tg.ADMINS, len(S["channels"]))
@@ -29,7 +33,7 @@ def main():
                 S.clear(); S.update(merge_defaults(R)); save("settings.json", S)
                 log.info("settings reloaded from repo")
         try:
-            for u in tg.updates(state.get("offset", 0), timeout=20 if end - time.time() > 40 else 1):
+            for u in tg.updates(state.get("offset", 0), timeout=(3 if router.OUTBOX else 20) if end - time.time() > 40 else 1):
                 state["offset"] = u["update_id"] + 1
                 try:
                     panel.handle(u, S, state, save_s)
@@ -51,8 +55,10 @@ def main():
                     fn()
                 except Exception:
                     log.warning("%s: %s", name, traceback.format_exc())
+        router.drain(S["params"].get("send_gap_sec", 20))
         save("state.json", state)
         save("settings.json", S)
+    router.drain(S["params"].get("send_gap_sec", 20), flush=True)
     log.info("done")
 
 

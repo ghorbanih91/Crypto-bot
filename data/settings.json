@@ -33,14 +33,14 @@
  ],
  "params": {
   "min_score": 7,
-  "min_rr": 2.0,
+  "min_rr": 2,
   "daily_hour": 8,
   "price_hour": 9,
-  "price_move_pct": 1.0,
+  "price_move_pct": 1,
   "price_every_hours": 0,
-  "gold_adjust_pct": 0.0,
+  "gold_adjust_pct": 0,
   "news_min_importance": 6,
   "news_max_per_run": 3
  },
- "_rev": 1795782732.3835123
+ "_rev": 1795805273.059
 }

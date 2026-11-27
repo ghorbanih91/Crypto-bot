@@ -1,0 +1,68 @@
+<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>پنل مدیریت بات</title>
+<style>
+:root{--bg:#0f1520;--card:#182235;--fg:#d6deeb;--mut:#8aa0c0;--ok:#26a69a;--bad:#ef5350;--ac:#4c8bf5}
+*{box-sizing:border-box}body{font-family:tahoma,sans-serif;background:var(--bg);color:var(--fg);max-width:720px;margin:auto;padding:12px}
+.c{background:var(--card);border-radius:12px;padding:14px;margin:12px 0}h2,h3{margin:4px 0 10px}
+input,select{background:#0f1520;color:var(--fg);border:1px solid #2a3345;border-radius:8px;padding:9px;width:100%;margin:4px 0;font-family:inherit}
+button{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:10px 14px;font-family:inherit;cursor:pointer;margin:4px 0}
+button.s{background:#2a3345}button.d{background:var(--bad)}.row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid #222d42}
+.m{font-size:12px;color:var(--mut)}label.ch{display:inline-flex;gap:4px;align-items:center;margin-left:10px;font-size:13px}
+input[type=checkbox]{width:auto;margin:0}#msg{position:sticky;top:6px;z-index:5}.ok{background:var(--ok)}.er{background:var(--bad)}
+.toast{padding:10px;border-radius:8px;margin:6px 0}.p{display:grid;grid-template-columns:1fr 110px;gap:8px;align-items:center;padding:6px 0}
+</style></head><body>
+<h2>🎛 پنل مدیریت بات</h2><div id="msg"></div>
+<div class="c" id="conn"><h3>🔑 اتصال به گیت‌هاب</h3>
+<div class="m">ریپو به شکل <b>نام‌کاربری/نام‌ریپو</b> ؛ توکن: Fine-grained token فقط برای همین ریپو با دسترسی <b>Contents: Read and write</b>. توکن فقط در مرورگر خودتان می‌ماند.</div>
+<input id="repo" placeholder="username/crypto-bot" dir="ltr"><input id="tok" type="password" placeholder="github_pat_..." dir="ltr">
+<button onclick="connect()">اتصال و بارگذاری</button> <button class="s" onclick="forget()">فراموش کردن توکن</button></div>
+<div id="app" style="display:none">
+<div class="c"><h3>🔌 بخش‌ها و مقصد</h3><div id="feat"></div></div>
+<div class="c"><h3>📡 کانال‌ها</h3><div class="m">بات را در کانال ادمین کنید تا خودکار ثبت شود (بعد دکمهٔ «بارگذاری مجدد»). یا دستی اضافه کنید:</div>
+<div id="chs"></div><div class="p"><input id="nid" placeholder="-100123456789" dir="ltr"><input id="nti" placeholder="نام کانال"></div>
+<button class="s" onclick="addCh()">➕ افزودن</button></div>
+<div class="c"><h3>🪙 نمادها</h3><input id="syms" dir="ltr" placeholder="BTC-USDT,ETH-USDT"><div class="m">فرمت OKX مثل BTC-USDT</div></div>
+<div class="c"><h3>⚙️ پارامترها</h3><div id="par"></div></div>
+<button onclick="save()">💾 ذخیره (اعمال تا ~۲ دقیقه)</button> <button class="s" onclick="load()">🔄 بارگذاری مجدد</button>
+<div class="c"><h3>📈 آمار سیگنال‌ها</h3><div id="st" class="m">…</div></div></div>
+<script>
+const FEAT={daily_analysis:'📊 تحلیل روزانه',events:'🔔 رویدادهای چارت',signals:'🎯 سیگنال',news:'📰 اخبار مهم',prices:'💵 قیمت تتر و طلا'};
+const PAR={min_score:'حداقل امتیاز سیگنال (از ۱۱)',min_rr:'حداقل ریسک به ریوارد',daily_hour:'ساعت تحلیل روزانه (تهران)',price_hour:'ساعت قیمت روزانه (تهران)',
+price_move_pct:'حرکت شدید قیمت (٪)',price_every_hours:'ارسال دوره‌ای قیمت (ساعت، 0=خاموش)',gold_adjust_pct:'تنظیم قیمت طلا (٪)',news_min_importance:'حداقل اهمیت خبر (از ۱۰)',news_max_per_run:'حداکثر خبر در هر نوبت'};
+let S=null,sha=null;const $=id=>document.getElementById(id);
+$('repo').value=localStorage.repo||'';$('tok').value=localStorage.tok||'';
+function toast(t,ok=true){$('msg').innerHTML=`<div class="toast ${ok?'ok':'er'}">${t}</div>`;setTimeout(()=>$('msg').innerHTML='',5000)}
+const api=(p,o={})=>fetch(`https://api.github.com/repos/${localStorage.repo}/contents/${p}`,{...o,headers:{Authorization:'Bearer '+localStorage.tok,Accept:'application/vnd.github+json'}});
+const dec=b=>decodeURIComponent(escape(atob(b.replace(/\n/g,''))));const enc=s=>btoa(unescape(encodeURIComponent(s)));
+function connect(){localStorage.repo=$('repo').value.trim();localStorage.tok=$('tok').value.trim();load()}
+function forget(){localStorage.removeItem('tok');$('tok').value='';toast('توکن پاک شد')}
+async function load(){
+ if(!localStorage.repo||!localStorage.tok)return toast('ریپو و توکن را وارد کنید',false);
+ const r=await api('data/settings.json');if(!r.ok)return toast('خطا در اتصال: '+r.status+' (توکن/نام ریپو را بررسی کنید)',false);
+ const j=await r.json();sha=j.sha;S=JSON.parse(dec(j.content));render();$('app').style.display='block';toast('بارگذاری شد');stats()}
+function render(){
+ $('feat').innerHTML=Object.entries(FEAT).map(([k,n])=>{const rt=S.routes[k]||['all'];
+  return `<div class="row"><b>${n}</b><label class="ch"><input type="checkbox" ${S.features[k]!==false?'checked':''} onchange="S.features['${k}']=this.checked"> فعال</label>
+  <div style="width:100%"><label class="ch"><input type="checkbox" ${rt.includes('all')?'checked':''} onchange="rt('${k}','all',this.checked)"> همهٔ کانال‌ها</label>
+  ${Object.entries(S.channels).map(([c,t])=>`<label class="ch"><input type="checkbox" ${rt.includes(c)?'checked':''} onchange="rt('${k}','${c}',this.checked)"> ${t}</label>`).join('')}</div></div>`}).join('')
+  +`<div class="row"><b>📱 فید اپ</b><label class="ch"><input type="checkbox" ${S.features.app_feed!==false?'checked':''} onchange="S.features.app_feed=this.checked"> فعال</label></div>`;
+ $('chs').innerHTML=Object.entries(S.channels).map(([c,t])=>`<div class="row"><span>${t} <span class="m" dir="ltr">${c}</span></span><button class="d" onclick="delCh('${c}')">حذف</button></div>`).join('')||'<div class="m">کانالی ثبت نشده</div>';
+ $('syms').value=S.symbols.join(',');
+ $('par').innerHTML=Object.entries(PAR).map(([k,n])=>`<div class="p"><span>${n}</span><input type="number" step="any" dir="ltr" value="${S.params[k]}" onchange="S.params['${k}']=parseFloat(this.value)"></div>`).join('')}
+function rt(k,c,on){let r=(S.routes[k]||['all']).slice();if(c==='all'){r=on?['all']:[]}else{r=r.filter(x=>x!=='all'&&x!==c);if(on)r.push(c)}S.routes[k]=r.length?r:['all'];render()}
+function delCh(c){delete S.channels[c];for(const k in S.routes)S.routes[k]=S.routes[k].filter(x=>x!==c);render()}
+function addCh(){const i=$('nid').value.trim(),t=$('nti').value.trim()||i;if(!i)return;S.channels[i]=t;$('nid').value=$('nti').value='';render()}
+async function save(){
+ S.symbols=$('syms').value.split(',').map(x=>x.trim().toUpperCase()).filter(Boolean);S._rev=Date.now()/1000;
+ for(const k in S.routes)for(const c of S.routes[k])if(c!=='all'&&!S.channels[c])S.routes[k]=['all'];
+ const r=await api('data/settings.json',{method:'PUT',body:JSON.stringify({message:'settings (web panel)',content:enc(JSON.stringify(S,null,1)),sha})});
+ if(r.ok){sha=(await r.json()).content.sha;toast('✅ ذخیره شد؛ بات تا ~۲ دقیقه دیگر اعمال می‌کند')}
+ else if(r.status===409||r.status===422){toast('تنظیمات هم‌زمان تغییر کرده؛ دوباره بارگذاری کنید',false)}else toast('خطا: '+r.status,false)}
+async function stats(){
+ try{const r=await api('data/state.json');if(!r.ok)throw 0;const st=JSON.parse(dec((await r.json()).content)),a=st.signals||[];
+ const w=a.filter(s=>['tp1','tp2','be'].includes(s.status)).length,l=a.filter(s=>s.status==='sl').length,op=a.filter(s=>!s.status||['open','tp1'].includes(s.status)).length;
+ const cl=a.filter(s=>['sl','be','tp2'].includes(s.status)),avg=cl.length?cl.reduce((x,s)=>x+s.r,0)/cl.length:0;
+ $('st').innerHTML=`برد: ${w} | باخت: ${l} | باز: ${op} | وین‌ریت: ${(w+l?w/(w+l)*100:0).toFixed(0)}٪ | میانگین R: ${avg.toFixed(2)}<hr>`+
+ a.slice(-8).reverse().map(s=>`${s.dir==1?'🟢':'🔴'} ${s.sym} ${s.tf} · امتیاز ${s.score} · ${s.status||'open'}`).join('<br>')}catch(e){$('st').textContent='هنوز آماری نیست'}}
+if(localStorage.repo&&localStorage.tok)load();
+</script></body></html>

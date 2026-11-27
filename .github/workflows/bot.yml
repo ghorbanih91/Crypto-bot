@@ -1,0 +1,39 @@
+name: crypto-bot
+on:
+  schedule:
+    - cron: "0 * * * *"      # هر ساعت یک اجرای ۵۶ دقیقه‌ای
+  workflow_dispatch: {}      # اجرای دستی از تب Actions
+concurrency:
+  group: bot
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 62
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m bot.main --minutes 56
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ADMIN_IDS: ${{ secrets.ADMIN_IDS }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: ذخیره وضعیت و فید رویدادها
+        if: always()
+        run: |
+          git config user.name "bot"
+          git config user.email "bot@users.noreply.github.com"
+          cp data/events.json docs/events.json 2>/dev/null || true
+          git checkout -- data/settings.json || true
+          git add data docs
+          git commit -m "update data" || exit 0
+          git pull --rebase || true
+          git push

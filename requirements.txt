@@ -2,3 +2,5 @@ requests
 numpy
 matplotlib
 tzdata
+arabic-reshaper
+python-bidi

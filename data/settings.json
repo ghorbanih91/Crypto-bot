@@ -34,7 +34,7 @@
  "params": {
   "min_score": 10,
   "min_rr": 2,
-  "daily_hour": 24,
+  "daily_hour": 2,
   "price_hour": 24,
   "price_move_pct": 1,
   "price_every_hours": 8,
@@ -54,5 +54,5 @@
   "tag_prices": "#price"
  },
  "score_max": 16,
- "_rev": 1795815854.013
+ "_rev": 1795815958.979
 }

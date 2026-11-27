@@ -23,12 +23,14 @@ input[type=checkbox]{width:auto;margin:0}#msg{position:sticky;top:6px;z-index:5}
 <button class="s" onclick="addCh()">➕ افزودن</button></div>
 <div class="c"><h3>🪙 نمادها</h3><input id="syms" dir="ltr" placeholder="BTC-USDT,ETH-USDT"><div class="m">فرمت OKX مثل BTC-USDT</div></div>
 <div class="c"><h3>⚙️ پارامترها</h3><div id="par"></div></div>
+<div class="c"><h3>✏️ متن‌ها و هشتگ‌ها</h3><div class="m">واترمارک ترجیحاً انگلیسی باشد. هشتگ‌ها و امضا به انتهای پیام‌ها اضافه می‌شوند.</div><div id="txt"></div></div>
 <button onclick="save()">💾 ذخیره (اعمال تا ~۲ دقیقه)</button> <button class="s" onclick="load()">🔄 بارگذاری مجدد</button>
 <div class="c"><h3>📈 آمار سیگنال‌ها</h3><div id="st" class="m">…</div></div></div>
 <script>
 const FEAT={daily_analysis:'📊 تحلیل روزانه',events:'🔔 رویدادهای چارت',signals:'🎯 سیگنال',news:'📰 اخبار مهم',prices:'💵 قیمت تتر و طلا'};
-const PAR={min_score:'حداقل امتیاز سیگنال (از ۱۱)',min_rr:'حداقل ریسک به ریوارد',daily_hour:'ساعت تحلیل روزانه (تهران)',price_hour:'ساعت قیمت روزانه (تهران)',
-price_move_pct:'حرکت شدید قیمت (٪)',price_every_hours:'ارسال دوره‌ای قیمت (ساعت، 0=خاموش)',gold_adjust_pct:'تنظیم قیمت طلا (٪)',news_min_importance:'حداقل اهمیت خبر (از ۱۰)',news_max_per_run:'حداکثر خبر در هر نوبت'};
+const PAR={min_score:'حداقل امتیاز سیگنال (از ۱۶)',min_rr:'حداقل ریسک به ریوارد',daily_hour:'ساعت تحلیل روزانه (تهران)',price_hour:'ساعت قیمت روزانه (تهران)',
+price_move_pct:'حرکت شدید قیمت (٪)',price_every_hours:'ارسال دوره‌ای قیمت (ساعت، 0=خاموش)',gold_adjust_pct:'تنظیم قیمت طلا (٪)',news_min_importance:'حداقل اهمیت خبر (از ۱۰)',news_max_per_run:'حداکثر خبر در هر نوبت',send_gap_sec:'فاصلهٔ ارسال پیام‌ها (ثانیه)'};
+const TXT={watermark:'واترمارک تصاویر',disclaimer:'هشدار ریسک سیگنال‌ها',footer:'امضای پایین همهٔ پیام‌ها',tag_signals:'هشتگ سیگنال‌ها',tag_events:'هشتگ رویدادها',tag_daily_analysis:'هشتگ تحلیل روزانه',tag_news:'هشتگ اخبار',tag_prices:'هشتگ قیمت‌ها'};
 let S=null,sha=null;const $=id=>document.getElementById(id);
 $('repo').value=localStorage.repo||'';$('tok').value=localStorage.tok||'';
 function toast(t,ok=true){$('msg').innerHTML=`<div class="toast ${ok?'ok':'er'}">${t}</div>`;setTimeout(()=>$('msg').innerHTML='',5000)}
@@ -47,7 +49,8 @@ function render(){
   ${Object.entries(S.channels).map(([c,t])=>`<label class="ch"><input type="checkbox" ${rt.includes(c)?'checked':''} onchange="rt('${k}','${c}',this.checked)"> ${t}</label>`).join('')}</div></div>`}).join('')
   +`<div class="row"><b>📱 فید اپ</b><label class="ch"><input type="checkbox" ${S.features.app_feed!==false?'checked':''} onchange="S.features.app_feed=this.checked"> فعال</label></div>`;
  $('chs').innerHTML=Object.entries(S.channels).map(([c,t])=>`<div class="row"><span>${t} <span class="m" dir="ltr">${c}</span></span><button class="d" onclick="delCh('${c}')">حذف</button></div>`).join('')||'<div class="m">کانالی ثبت نشده</div>';
- $('syms').value=S.symbols.join(',');
+ $('syms').value=S.symbols.join(',');S.texts=S.texts||{};
+ $('txt').innerHTML=Object.entries(TXT).map(([k,n])=>`<div class="row" style="display:block"><span class="m">${n}</span><input value="${(S.texts[k]||'').replace(/"/g,'&quot;')}" onchange="S.texts['${k}']=this.value"></div>`).join('');
  $('par').innerHTML=Object.entries(PAR).map(([k,n])=>`<div class="p"><span>${n}</span><input type="number" step="any" dir="ltr" value="${S.params[k]}" onchange="S.params['${k}']=parseFloat(this.value)"></div>`).join('')}
 function rt(k,c,on){let r=(S.routes[k]||['all']).slice();if(c==='all'){r=on?['all']:[]}else{r=r.filter(x=>x!=='all'&&x!==c);if(on)r.push(c)}S.routes[k]=r.length?r:['all'];render()}
 function delCh(c){delete S.channels[c];for(const k in S.routes)S.routes[k]=S.routes[k].filter(x=>x!==c);render()}

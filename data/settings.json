@@ -5,7 +5,7 @@
   "signals": true,
   "news": true,
   "prices": true,
-  "app_feed": false
+  "app_feed": true
  },
  "routes": {
   "daily_analysis": [
@@ -42,5 +42,5 @@
   "news_min_importance": 6,
   "news_max_per_run": 3
  },
- "_rev": 1795782403.8171947
+ "_rev": 1795782407.670087
 }

@@ -29,7 +29,11 @@
  },
  "symbols": [
   "BTC-USDT",
-  "ETH-USDT"
+  "ETH-USDT",
+  "XAU-USDT",
+  "BNB-USDT",
+  "SOL-USDT",
+  "XRP-USDT"
  ],
  "params": {
   "min_score": 10,
@@ -54,5 +58,5 @@
   "tag_prices": "#price"
  },
  "score_max": 16,
- "_rev": 1795820657.9
+ "_rev": 1795820742.39
 }

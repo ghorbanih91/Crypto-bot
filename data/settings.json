@@ -24,7 +24,9 @@
    "all"
   ]
  },
- "channels": {},
+ "channels": {
+  "-1005891454615": "Sodina crypto nsp"
+ },
  "symbols": [
   "BTC-USDT",
   "ETH-USDT"
@@ -40,5 +42,5 @@
   "news_min_importance": 6,
   "news_max_per_run": 3
  },
- "_rev": 0
+ "_rev": 1795781284.524426
 }

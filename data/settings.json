@@ -1,7 +1,7 @@
 {
  "features": {
   "daily_analysis": true,
-  "events": true,
+  "events": false,
   "signals": true,
   "news": true,
   "prices": true,
@@ -42,5 +42,5 @@
   "news_min_importance": 6,
   "news_max_per_run": 3
  },
- "_rev": 1795782080.325695
+ "_rev": 1795782086.040981
 }

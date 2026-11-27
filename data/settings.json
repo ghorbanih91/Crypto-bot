@@ -44,15 +44,15 @@
   "send_gap_sec": 20
  },
  "texts": {
-  "watermark": "",
-  "disclaimer": "⚠️ توصیهٔ مالی نیست؛ ریسک هر معامله حداکثر ۱٪ سرمایه.",
-  "footer": "",
-  "tag_signals": "",
-  "tag_events": "",
-  "tag_daily_analysis": "",
-  "tag_news": "",
-  "tag_prices": ""
+  "watermark": "Sodina",
+  "disclaimer": "⚠️ ریسک هر معامله حداکثر ۱٪ سرمایه.",
+  "footer": "Sodina.ir",
+  "tag_signals": "#signal",
+  "tag_events": "#event",
+  "tag_daily_analysis": "#tahlil",
+  "tag_news": "#news",
+  "tag_prices": "#price"
  },
  "score_max": 16,
- "_rev": 1795815622.1267989
+ "_rev": 1795815854.013
 }

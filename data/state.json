@@ -1,9 +1,9 @@
 {
  "last": {
-  "scan": 1795818712.891608,
-  "news": 1795817464.5302763,
-  "prices": 1795818714.5017462,
-  "daily": 1795818716.0956235
+  "scan": 1795838044.7546413,
+  "news": 1795836753.0226064,
+  "prices": 1795837960.3206582,
+  "daily": 1795838068.0895908
  },
  "signals": [
   {
@@ -34,8 +34,9 @@
    "zone_kind": "FVG",
    "t": 1795810500.0,
    "id": "1795811535BTC15m",
-   "status": "open",
-   "last_t": 1795817700.0
+   "status": "sl",
+   "last_t": 1795827600.0,
+   "r": -1.0
   },
   {
    "sym": "BTC-USDT",
@@ -65,8 +66,9 @@
    "zone_kind": "FVG",
    "t": 1795811400.0,
    "id": "1795812464BTC15m",
-   "status": "open",
-   "last_t": 1795817700.0
+   "status": "sl",
+   "last_t": 1795827600.0,
+   "r": -1.0
   },
   {
    "sym": "BTC-USDT",
@@ -95,8 +97,9 @@
    "zone_kind": "FVG",
    "t": 1795812300.0,
    "id": "1795813386BTC15m",
-   "status": "open",
-   "last_t": 1795817700.0
+   "status": "sl",
+   "last_t": 1795827600.0,
+   "r": -1.0
   }
  ],
  "sent_events": [
@@ -114,7 +117,23 @@
   "ETH-USDT|1H|Sweep|1|1795802400",
   "ETH-USDT|4H|Sweep|-1|1795780800",
   "ETH-USDT|4H|Sweep|1|1795780800",
-  "ETH-USDT|4H|Sweep|1|1795795200"
+  "ETH-USDT|4H|Sweep|1|1795795200",
+  "BTC-USDT|4H|Sweep|1|1795809600",
+  "BTC-USDT|1H|Sweep|1|1795827600",
+  "BTC-USDT|1H|Sweep|-1|1795831200",
+  "ETH-USDT|4H|CHoCH|-1|1795809600",
+  "ETH-USDT|1H|Sweep|1|1795827600",
+  "ETH-USDT|1H|Sweep|1|1795831200",
+  "BNB-USDT|4H|Sweep|1|1795795200",
+  "SOL-USDT|4H|Sweep|-1|1795809600",
+  "SOL-USDT|1D|Sweep|1|1795622400",
+  "SOL-USDT|1H|Sweep|1|1795827600",
+  "SOL-USDT|1H|Sweep|-1|1795831200",
+  "SOL-USDT|1H|Sweep|1|1795831200",
+  "XRP-USDT|4H|Sweep|1|1795795200",
+  "XRP-USDT|4H|Sweep|1|1795809600",
+  "XRP-USDT|1H|Sweep|-1|1795827600",
+  "XRP-USDT|1H|Sweep|-1|1795831200"
  ],
  "sig_keys": {
   "BTC-USDT|-1|78": 1795811535.0346968,
@@ -132,5 +151,9 @@
  "price_ts": 1795811545.5313408,
  "daily_date": "2026-11-28",
  "offset": 346980012,
- "event_last": {}
+ "event_last": {
+  "BTC-USDT|4H": 1795834933.82641,
+  "BTC-USDT|1H": 1795834933.9982524,
+  "ETH-USDT|4H": 1795834934.6907132
+ }
 }

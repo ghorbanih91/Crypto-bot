@@ -48,7 +48,7 @@
   "send_gap_sec": 20
  },
  "texts": {
-  "watermark": "Sodina.ir | سودینا",
+  "watermark": "Sodina.ir ",
   "disclaimer": "⚠️ ریسک هر معامله حداکثر ۱٪ سرمایه.",
   "footer": "Sodina.ir",
   "tag_signals": "#signal",
@@ -58,5 +58,5 @@
   "tag_prices": "#price"
  },
  "score_max": 16,
- "_rev": 1795820742.39
+ "_rev": 1795864535.637
 }

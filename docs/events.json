@@ -624,5 +624,118 @@
     }
    ]
   }
+ },
+ {
+  "id": "8997478a01",
+  "ts": 1795869474,
+  "type": "chart_event",
+  "symbol": "BTC-USDT",
+  "title": "BTC 1H Sweep/Sweep",
+  "text": "‏🔔 <b>#BTCUSDT | تایم‌فریم ۱ ساعته</b>\n‏🧲 جارو شدن نقدینگی سقف‌ها در <code>59,480.0</code> — احتمال حرکت نزولی\n‏🧲 جارو شدن نقدینگی کف‌ها در <code>59,236.7</code> — احتمال حرکت صعودی",
+  "data": {
+   "tf": "1H",
+   "events": [
+    {
+     "kind": "Sweep",
+     "dir": -1,
+     "level": 59480.0
+    },
+    {
+     "kind": "Sweep",
+     "dir": 1,
+     "level": 59236.7
+    }
+   ]
+  }
+ },
+ {
+  "id": "60a8d68989",
+  "ts": 1795869475,
+  "type": "chart_event",
+  "symbol": "ETH-USDT",
+  "title": "ETH 4H Sweep",
+  "text": "‏🔔 <b>#ETHUSDT | تایم‌فریم ۴ ساعته</b>\n‏🧲 جارو شدن نقدینگی کف‌ها در <code>1,648.3</code> — احتمال حرکت صعودی",
+  "data": {
+   "tf": "4H",
+   "events": [
+    {
+     "kind": "Sweep",
+     "dir": 1,
+     "level": 1648.34
+    }
+   ]
+  }
+ },
+ {
+  "id": "ecbdd7d872",
+  "ts": 1795869476,
+  "type": "chart_event",
+  "symbol": "BNB-USDT",
+  "title": "BNB 4H Sweep",
+  "text": "‏🔔 <b>#BNBUSDT | تایم‌فریم ۴ ساعته</b>\n‏🧲 جارو شدن نقدینگی کف‌ها در <code>550.47</code> — احتمال حرکت صعودی",
+  "data": {
+   "tf": "4H",
+   "events": [
+    {
+     "kind": "Sweep",
+     "dir": 1,
+     "level": 550.47
+    }
+   ]
+  }
+ },
+ {
+  "id": "096f334adf",
+  "ts": 1795869479,
+  "type": "prices",
+  "symbol": null,
+  "title": "قیمت تتر و طلا",
+  "text": "‏💵 <b>قیمت‌ها</b> — گزارش دوره‌ای\n‏💲 تتر: <code>298,484</code> تومان (+1.5٪)\n‏🥇 طلای ۱۸ عیار: <code>26,276,112</code> تومان/گرم (تخمینی) (+1.6٪)",
+  "data": {
+   "usdt": 298484.0,
+   "gold18": 26276111.704470564,
+   "src": "Wallex"
+  }
+ },
+ {
+  "id": "c220ac57e1",
+  "ts": 1795871040,
+  "type": "chart_event",
+  "symbol": "BNB-USDT",
+  "title": "BNB 1H Sweep",
+  "text": "‏🔔 <b>#BNBUSDT | تایم‌فریم ۱ ساعته</b>\n‏🧲 جارو شدن نقدینگی کف‌ها در <code>549.91</code> — احتمال حرکت صعودی",
+  "data": {
+   "tf": "1H",
+   "events": [
+    {
+     "kind": "Sweep",
+     "dir": 1,
+     "level": 549.91
+    }
+   ]
+  }
+ },
+ {
+  "id": "5cd4b74c55",
+  "ts": 1795871041,
+  "type": "chart_event",
+  "symbol": "SOL-USDT",
+  "title": "SOL 1H Sweep/Sweep",
+  "text": "‏🔔 <b>#SOLUSDT | تایم‌فریم ۱ ساعته</b>\n‏🧲 جارو شدن نقدینگی سقف‌ها در <code>71.12</code> — احتمال حرکت نزولی\n‏🧲 جارو شدن نقدینگی کف‌ها در <code>70.84</code> — احتمال حرکت صعودی",
+  "data": {
+   "tf": "1H",
+   "events": [
+    {
+     "kind": "Sweep",
+     "dir": -1,
+     "level": 71.12
+    },
+    {
+     "kind": "Sweep",
+     "dir": 1,
+     "level": 70.84
+    }
+   ]
+  }
  }
 ]
